@@ -1,10 +1,10 @@
 import React from 'react'
-import banner from "../assets/avengersd.jpg"
+import banner from "../assets/avengers.jpg"
 function Banner() {
     return (
-       <div className='h-[70vh] md:h-[110vh] bg-cover bg-center  flex items-end' style={{ backgroundImage: `url(https://images.hdqwalls.com/wallpapers/poster-avengers-endgame-ni.jpg)` }}>
-</div>
-
+        <div className='h-[50vh] md:h-[90vh] bg-cover bg-center flex items-end' style={{ backgroundImage: `url(${banner})` }}>
+            <div className='text-white text-xl text-center w-full bg-gray-900/60 p-2'>Avengers Endgame</div>
+        </div>
     )
 }
 
