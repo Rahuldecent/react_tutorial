@@ -3,17 +3,21 @@ import React, { useEffect, useState } from "react";
 function WatchList({ watchlist, handleRemoveFromWatchlist, setWatchlist }) {
   let [allgenre, setAllGenre] = useState([]);
   let [search, setSearch] = useState("");
+  let [genre, setGenre] = useState("")
 
   function handleSearch(e) {
     setSearch(e.target.value);
   }
-  function getGenreByMovie(watchlist) {
-    for (let item of watchlist) {
-      const genres = allgenre
-        .filter((g) => item.genre_ids.includes(g.id))
-        .map((g) => g.name);
-    }
-  }
+function getGenreByMovie(watchlist) {
+  const updated = watchlist.map((movie) => {
+    const genres = allgenre
+      .filter((g) => movie.genre_ids.includes(g.id))
+      .map((g) => g.name)
+      .join(", ");
+    return { ...movie, genre: genres };
+  });
+  setWatchlist(updated);
+}
 
   function sortIncresing() {
     const incresingSortlist = watchlist.sort(
@@ -28,33 +32,40 @@ function WatchList({ watchlist, handleRemoveFromWatchlist, setWatchlist }) {
     );
     setWatchlist([...descSortlist]);
   }
-  // useEffect(() => {
-  //   getGenreByMovie(watchlist);
-  // }, []);
-  // useEffect(() => {
-  //   const url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
-  //   const options = {
-  //     method: "GET",
-  //     headers: {
-  //       accept: "application/json",
-  //       Authorization:
-  //         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTdmYTkxZWM0NGY4MTk5OWFjMjYxZjQ5ZTc5MmY5MiIsIm5iZiI6MTc0ODI2MzE0OS4wMzEwMDAxLCJzdWIiOiI2ODM0NjBlZGViNGQ2YThjZjMwMzc0YjgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.2Gptj-gkljt0ZiYlWVowPZ_R9ThKLeJvnOsMtTU-lbw",
-  //     },
-  //   };
 
-  //   fetch(url, options)
-  //     .then((res) => res.json())
-  //     .then((json) => {
-  //       setAllGenre(json.genres);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }, []);
+  useEffect(() => {
+    const url = "https://api.themoviedb.org/3/genre/movie/list?language=en";
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTdmYTkxZWM0NGY4MTk5OWFjMjYxZjQ5ZTc5MmY5MiIsIm5iZiI6MTc0ODI2MzE0OS4wMzEwMDAxLCJzdWIiOiI2ODM0NjBlZGViNGQ2YThjZjMwMzc0YjgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.2Gptj-gkljt0ZiYlWVowPZ_R9ThKLeJvnOsMtTU-lbw",
+      },
+    };
+
+    fetch(url, options)
+      .then((res) => res.json())
+      .then((json) => {
+        setAllGenre(json.genres);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    if (allgenre.length > 0 && watchlist.length > 0) {
+      getGenreByMovie(watchlist);
+    }
+  }, [allgenre, watchlist]);
   return (
     <>
       <div className="flex justify-center flex-wrap m-4">
-        <div className="bg-blue-400 flex  items-center justify-center h-[2rem] w-[6rem] rounded-xl text-white font-bold mx-4">
-          Action
+        {allgenre.map((genre) =>{
+          return  <div className="bg-blue-400 flex  items-center justify-center h-[2rem] w-[6rem] rounded-xl text-white font-bold mx-4">
+          {genre.name}
         </div>
+        })}
+       
         <div className="bg-gray-400 flex  items-center justify-center h-[2rem] w-[6rem] rounded-xl text-white font-bold">
           Action
         </div>
